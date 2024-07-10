@@ -20,6 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -53,11 +57,15 @@ fun DaysApp() {
     Scaffold(topBar = {
         TopAppBar()
     }) { it ->
+        var expanded by remember {
+            mutableStateOf(false)
+        }
         LazyColumn(contentPadding = it) {
             items(Datasource().loadDays()) { day ->
                 DayCard(
                     day = day,
-                    onClick = {},
+                    expanded = expanded,
+                    onClick = {expanded = !expanded},
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -80,6 +88,7 @@ fun TopAppBar(modifier: Modifier = Modifier) {
 @Composable
 fun DayCard(
     day: Day,
+    expanded:Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -106,7 +115,9 @@ fun DayCard(
                     .height(194.dp)
 
             )
-            DayDescription(description = day.description)
+            if(expanded){
+                DayDescription(description = day.description)
+            }
         }
     }
 }
