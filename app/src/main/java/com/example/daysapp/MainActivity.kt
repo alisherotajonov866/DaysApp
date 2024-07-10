@@ -57,11 +57,11 @@ fun DaysApp() {
     Scaffold(topBar = {
         TopAppBar()
     }) { it ->
-        var expanded by remember {
-            mutableStateOf(false)
-        }
         LazyColumn(contentPadding = it) {
             items(Datasource().loadDays()) { day ->
+                var expanded by remember {
+                    mutableStateOf(false)
+                }
                 DayCard(
                     day = day,
                     expanded = expanded,
@@ -83,6 +83,11 @@ fun TopAppBar(modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
+
+/*@Composable
+fun DayItem(): Unit {
+
+}*/
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
