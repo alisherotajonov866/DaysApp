@@ -4,7 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,7 +70,7 @@ fun DaysApp() {
                 DayCard(
                     day = day,
                     expanded = expanded,
-                    onClick = {expanded = !expanded},
+                    onClick = { expanded = !expanded },
                     modifier = Modifier.padding(16.dp)
                 )
             }
@@ -84,30 +89,43 @@ fun TopAppBar(modifier: Modifier = Modifier) {
     )
 }
 
-/*@Composable
-fun DayItem(): Unit {
-
-}*/
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DayCard(
     day: Day,
-    expanded:Boolean,
+    expanded: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val color by animateColorAsState(
+        targetValue = if (expanded) MaterialTheme.colorScheme.tertiaryContainer
+        else MaterialTheme.colorScheme.primaryContainer
+    )
     Card(
-        modifier = modifier,
-        onClick = onClick
+        onClick = onClick,
+        modifier = modifier
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(
+            modifier = Modifier
+                .background(color = color)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    )
+
+                ),
+        ) {
             Text(
+                modifier = Modifier
+                    .padding(8.dp),
                 text = day.time,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
             Text(
+                modifier = Modifier
+                    .padding(8.dp),
                 text = stringResource(id = day.title),
                 style = MaterialTheme.typography.titleMedium
             )
@@ -118,23 +136,19 @@ fun DayCard(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(194.dp)
+                    .padding(8.dp),
 
-            )
-            if(expanded){
-                DayDescription(description = day.description)
+                )
+            if (expanded) {
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp),
+                    text = stringResource(id = day.description),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
-}
-
-@Composable
-fun DayDescription(
-    @StringRes description: Int,
-) {
-    Text(
-        text = stringResource(id = description),
-        style = MaterialTheme.typography.bodyMedium
-    )
 }
 
 @Preview
